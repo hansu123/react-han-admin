@@ -43,10 +43,8 @@ class HTable extends React.Component {
     onRow={(record, index) => {
       return {
         onClick: event => {
-       
           this.onRowClick(record, index)
         }, // 点击行
-
       };
     }}></Table>
   }
@@ -54,7 +52,6 @@ class HTable extends React.Component {
     return (
       <div>
         {this.initTable()}
-
       </div>
     );
   }

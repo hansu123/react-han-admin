@@ -1,7 +1,7 @@
 import {get} from "../util/request"
 class ArticleModel{
 async getArticleList(){
-let res=await get("article")
+let res=await get("article/list")
 return res
 }
 }

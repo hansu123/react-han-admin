@@ -1,6 +1,5 @@
 import axios from "axios"
 
-
 const http = axios.create({
   // baseURL: "http://localhost:4000/",
   // baseURL: process.env.BASE_API,
@@ -14,7 +13,12 @@ const http = axios.create({
 //请求拦截
 http.interceptors.request.use(config => {
   
-  return config
+if (config.method === 'post' || config.method === "put" || config.method === "delete") {
+    //config.data = JSON.stringify(config.data);
+}
+
+return config;
+
 }, error => {
   console.error(error)
   Promise.reject(error)
@@ -23,7 +27,7 @@ http.interceptors.request.use(config => {
 //响应拦截
 http.interceptors.response.use(
   response => {
-  
+   
     return response;
   },
   error => {

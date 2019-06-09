@@ -14,7 +14,7 @@ render() {
       <div>
         {
           // this.state.list instanceof Array ? <LayoutUI ></LayoutUI>: ""
-          <LayoutUI children={this.props.children}></LayoutUI>
+          <LayoutUI children={this.props.children} ></LayoutUI>
         }
       </div>
     )

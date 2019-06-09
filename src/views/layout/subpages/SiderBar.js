@@ -4,8 +4,8 @@ import { connect } from "react-redux"
 import { Layout, Menu, Icon } from 'antd';
 import { Link } from 'react-router-dom'
 import menuList from "@/lib/menu"
-import { LayoutWrapper } from "./style.js"
-import { SET_MENU } from '../../redux/actionType.js';
+import { LayoutWrapper } from "../style.js"
+import {changeBreadAction} from "@/redux/modules/breadcrumb/actionCreators"
 
 const { Sider } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -107,11 +107,8 @@ class SiderBar extends React.Component {
 const mapDispatchToProps = (dispatch) => {
   return {
     changeBread(value) {
-      const action = {
-        type: SET_MENU,
-        value
-      }
-      dispatch(action)
+     const action=changeBreadAction(value)
+     dispatch(action)
     }
   }
 }

@@ -20,7 +20,7 @@ class AddForm extends React.Component {
   
     return (
       <div>
-         <Form>
+         <Form >
               <FormItem label="角色名称" {...formItemLayout}>
                 {getFieldDecorator('roleName')(
                   <Input placeholder="角色名称"></Input>

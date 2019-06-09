@@ -1,6 +1,7 @@
 import React from 'react';
 import App from "../App"
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { connect } from "react-redux"
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
 
 import Layout from '@/views/layout/Layout'
 import SignIn from '@/views/sign/SignIn'
@@ -22,41 +23,49 @@ import NotFound from "@/views/notFound/"
 class index extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
 
-     };
+    };
   }
   render() {
     return (
       <Router>
-      <App>
-        <Switch>
-          <Route path="/signIn" component={SignIn}></Route>
-          <Route path="/signUp" component={SignUp}></Route>
-          <Route parth="/" render={() =>
-            <Layout>
-              <Switch>
-                <Route path="/" exact={true} component={Home}></Route>
-                <Route path="/home" component={Home}></Route>
-                <Route path="/ui/button" component={UIButton}></Route>
-                <Route path="/ui/tab" component={UITabs}></Route>
-                <Route path="/article/articleList" component={ArticleList}></Route>
-                <Route path="/article/articleAdd" component={ArticleAdd}></Route>
-                <Route path="/user" component={User}></Route>
-                <Route path="/chart/bar" component={ChartBar}></Route>
-                <Route path="/chart/pie" component={ChartPie}></Route>
-                <Route path="/role/manage" component={Manage}></Route>
-                <Route path="/role/organize" component={Organize}></Route>
-                <Route component={NotFound}></Route>
-              </Switch>
-            </Layout>
-          } />
-         
-        </Switch>
-      </App>
-    </Router>
+        <App>
+          <Switch>
+            <Route path="/signIn" component={SignIn}></Route>
+            <Route path="/signUp" component={SignUp}></Route>
+            {this.props.isSignIn ? <Route parth="/" render={(props) =>
+
+              <Layout>
+                <Switch>
+                  <Route path="/" exact={true} component={Home}></Route>
+                  <Route path="/home" component={Home}></Route>
+                  <Route path="/ui/button" component={UIButton}></Route>
+                  <Route path="/ui/tab" component={UITabs}></Route>
+                  <Route path="/article/articleList" component={ArticleList}></Route>
+                  <Route path="/article/articleAdd" component={ArticleAdd}></Route>
+                  <Route path="/user" component={User}></Route>
+                  <Route path="/chart/bar" component={ChartBar}></Route>
+                  <Route path="/chart/pie" component={ChartPie}></Route>
+                  <Route path="/role/manage" component={Manage}></Route>
+                  <Route path="/role/organize" component={Organize}></Route>
+                  <Route component={NotFound}></Route>
+                </Switch>
+              </Layout>
+            } /> : <Redirect to="/signIn"></Redirect>
+            }
+
+          </Switch>
+        </App>
+      </Router>
     );
   }
-}
 
-export default index;
+
+}
+const mapStateToProps = (state) => {
+  return {
+    isSignIn: state.signIn.isSignIn
+  }
+}
+export default connect(mapStateToProps, null)(index);

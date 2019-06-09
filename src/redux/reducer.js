@@ -1,13 +1,8 @@
-import { SET_MENU } from "./actionType"
-const initState = {
-  breadName: "/home"
-}
-export default (state = initState, action) => {
-  console.log(action)
-  if (action.type === SET_MENU) {
-    let newState = JSON.parse(JSON.stringify(state))
-    newState.breadName = action.value
-    return newState
-  }
-  return state
-}
+import {combineReducers} from "redux"
+import breadcrumbReducer from "./modules/breadcrumb/reducer"
+import signInReducer from "./modules/sign/reducer"
+
+export default combineReducers({
+  breadcrumb:breadcrumbReducer,
+  signIn:signInReducer
+})

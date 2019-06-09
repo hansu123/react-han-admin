@@ -1,10 +1,10 @@
 import React from 'react';
 import { LayoutWrapper } from "./style.js"
-import SiderBar from "./SiderBar"
-import HeaderBar from "./HeaderBar"
-import HBreadCrumb from "./HBreadCrumb"
+import SiderBar from "./subpages/SiderBar"
+import HeaderBar from "./subpages/HeaderBar"
+import HBreadCrumb from "./subpages/HBreadCrumb"
 import { Layout } from 'antd';
-
+import {CSSTransition} from "react-transition-group"
 const { Content } = Layout;
 
 class LayoutUI extends React.Component {
@@ -16,12 +16,19 @@ class LayoutUI extends React.Component {
         <Layout style={{ minHeight: '100vh' }}>
           <SiderBar></SiderBar>
           <Layout>
-            <Content className="content">
+            <Content className="content" history ={this.props.history}>
               <HeaderBar />
               <HBreadCrumb></HBreadCrumb>
+
+              <CSSTransition 
+             
+              timeout={1000}>
               <div className="content-body">
+              
                 {this.props.children}
+                
               </div>
+              </CSSTransition>
             </Content>
           </Layout>
         </Layout>

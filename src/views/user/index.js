@@ -2,9 +2,9 @@ import React from 'react';
 import UserModel from "@/models/user"
 import UserForm from "./form"
 import HTable from "@/components/HTable"
-import FormBar from "@/components/BaseForm/index.js"
-import { UserWrapper } from "./style.js"
-import { Button,Modal,Card } from "antd"
+import SearchBar from "@/components/SearchBar.js"
+import { Button, Modal, Card, Spin,Switch } from "antd"
+
 class index extends React.Component {
   constructor(props) {
     super(props);
@@ -13,31 +13,17 @@ class index extends React.Component {
         Color: "pink",
         BgColor: "#ccc"
       },
-      formList: [
-        {
-          type: "INPUT",
-          placeholder: "用户名",
-          field:"userName"
-        },
-        {
-          type: "INPUT",
-          placeholder: "手机号",
-          field:"phone"
-        },
-        {
-          type: "SELECT",
-          initLabel: "登录状态",
-          initValue: undefined,
-          Options: [{ value: 0, label: "下线" }, { value: 1, label: "上线" }],
-          field:"status"
-        },
-
-      ],
+      formOptions:["userName","phone","onlineStatus"],
       tableData: [],
       columns: [
         { title: '姓名', dataIndex: 'name', key: 'name', align: "center" },
-        { title: '性别', dataIndex: 'sex', key: 'sex', align: "center" },
-        { title: '登录状态', dataIndex: 'online', key: 'online', align: "center" },
+        { title: '头像', dataIndex: 'img', key: 'img', align: "center" ,render: (record) => 
+        <img src={record} style={{borderRadius:"50%"}} alt=""/>},
+        { title: '性别', dataIndex: 'sex', key: 'sex', align: "center" ,render:(record)=>{
+          return record?"男":"女"
+        }},
+        { title: '登录状态', dataIndex: 'online', key: 'online', align: "center",render: (record) => 
+        <Switch checked={record} />},
         { title: '手机号', dataIndex: 'phone', key: 'phone', align: "center" },
         { title: '地址', dataIndex: 'address', key: 'address', align: "center" },
         {
@@ -49,22 +35,29 @@ class index extends React.Component {
         },
       ],
       selectedRowKeys: [],
-
-      visible:false,
-      title:"",
-      type:"",
-
+      visible: false,
+      title: "",
+      type: "",
+      loading: false,
+     
     };
   }
 
-  getList = () => {
+  toggleLoading() {
+    this.setState({
+      loading: !this.state.loading
+    })
+  }
 
-    UserModel.getUserList().then((res) => {
+  getList = (params={}) => {
+    this.toggleLoading()
+    UserModel.getUserList(params).then((res) => {
+      console.log(res.data)
       this.setState({
         tableData: res.data.userList
       })
+    this.toggleLoading()
     })
-
   }
 
   onSelectChange = selectedRowKeys => {
@@ -74,10 +67,10 @@ class index extends React.Component {
     this.setState({ selectedRowKeys });
   };
 
- 
+
 
   handleOk = e => {
-   
+
     this.setState({
       visible: false,
     });
@@ -95,67 +88,71 @@ class index extends React.Component {
 
 
   //功能区
-  handleOperator=(type)=>{
+  handleOperator = (type) => {
 
     this.setState({
       type,
       visible: true,
-      title:"添加用户",
+      title: "添加用户",
     });
-
-
-
   }
 
 
-  render() {
-    const rowSelection = {
-      selectedRowKeys: this.state.selectedRowKeys,
-      onChange: this.onSelectChange,
-      hideDefaultSelections: true,
-    };
+  //获取行数据和选中的key
+  updateSelectedData=(record,index)=>{
+    console.log(index)
+    this.setState({
+      rowData:record,
+      selectedRowKeys:[index] //下标
+    })
+  }
+
   
+ onSearch=(val)=>{
+  this.getList(val)
+ }
+
+  render() {
+   
+
     return (
-      <UserWrapper primary allColor={this.state.allColor}>
-        <FormBar formList={this.state.formList}></FormBar>
-        <Card>
-        <Button onClick={()=>{this.handleOperator('add')}} type="primary" style={{marginRight:'20px'}}>添加</Button>
-        <Button onClick={this.showModal} type="danger" style={{marginRight:'20px'}}>删除</Button>
-        <Button onClick={this.showModal} type="warning">修改</Button>
-        </Card>
-        <HTable
-          onRow={record => {
-            return {
-              onClick: event => {
-                alert(1)
-              }, // 点击行
-            };
-          }}
-          rowSelection={rowSelection}
-          columns={this.state.columns}
-          dataSource={this.state.tableData}
-        />
-       
-        <Modal  title={this.state.title}
-          visible={this.state.visible}
-          onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          footer={[
-            <Button key="submit" type="primary"  onClick={this.handleOk}>
-            保存
+
+      <div className="table_wrapper">
+        <Spin spinning={this.state.loading} tip="加载中">
+          <SearchBar formOptions={this.state.formOptions} onSearch={this.onSearch.bind(this)}></SearchBar>
+          <Card>
+            <Button onClick={() => { this.handleOperator('add') }} type="primary" style={{ marginRight: '20px' }}>添加</Button>
+            <Button onClick={this.showModal} type="danger" style={{ marginRight: '20px' }}>删除</Button>
+            <Button onClick={this.showModal} type="warning">修改</Button>
+          </Card>
+          <HTable
+            bordered
+            rowSelection={"radio"}
+            selectedRowKeys={this.state.selectedRowKeys}
+            columns={this.state.columns}
+            dataSource={this.state.tableData}
+            updateSelectedData={this.updateSelectedData.bind(this)}
+          />
+
+          <Modal title={this.state.title}
+            visible={this.state.visible}
+            onOk={this.handleOk}
+            onCancel={this.handleCancel}
+            footer={[
+              <Button key="submit" type="primary" onClick={this.handleOk}>
+                保存
           </Button>,
-            <Button key="back" onClick={this.handleCancel}>
-              取消
+              <Button key="back" onClick={this.handleCancel}>
+                取消
             </Button>
-           ,
-          ]}
+              ,
+            ]}
           >
-          <UserForm wrappedComponentRef={(form) => this.userForm = form}>
-
-          </UserForm>
-        </Modal>
-
-      </UserWrapper>
+            <UserForm wrappedComponentRef={(form) => this.userForm = form}>
+            </UserForm>
+          </Modal>
+        </Spin>
+      </div>
     );
   }
 
@@ -163,5 +160,9 @@ class index extends React.Component {
     this.getList()
   }
 }
+
+
+
+
 
 export default index;

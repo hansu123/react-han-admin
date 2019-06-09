@@ -18,6 +18,21 @@ import {createStore,applyMiddleware} from "redux"
 
 通常我们会把异步操作放在action中，我们一般在vue中也是这么做的。但是在react中action**只能返回一个对象，不能返回一个函数**，于是我们需要redux-thunk这个中间件。
 
+没有使用redux-thunk之前
+
+```js
+export function initArticleAction(value){
+  return {
+  type: SET_ARTICLE,
+  value
+  }
+}
+```
+
+只能return一个对象
+
+使用redux-thunk之后
+
 * actionCreators中定义一个action
 
 ```jsx
@@ -44,6 +59,47 @@ getArticleList = () => {
 ```
 
 是不是很熟悉，说实话，感觉vue真的好用。
+
+
+
+异步请求改store中的方法
+
+- 定义 actionCreators的方法
+- 在组件中调用 actionCreators的方法，并传递请求后的数据
+- reducer中根据type存储对应的数据
+
+actionCreators:
+
+```jsx
+export function initArticleAction(value){
+  return {
+  type: SET_ARTICLE,
+  value
+}
+```
+
+组件中
+
+```jsx
+getArticleList = () => {
+    ArticleModel.getArticleList().then((res) => {
+      const action = initArticleAction(res.data)
+      store.dispatch(action)
+    })
+}
+```
+
+reducer
+
+```jsx
+if(action.type===SET_ARTICLE){
+    let newState=JSON.parse(JSON.stringify(state))
+    state.list=action.value
+    return newState
+}
+```
+
+
 
 
 

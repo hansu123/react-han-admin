@@ -173,5 +173,9 @@ console.log(aid)
 
 [官方文档](<https://reacttraining.com/react-router/web/guides/quick-start>)
 
+###四.通过函数跳转
 
+```
+this.props.history.push('/')
+```
 

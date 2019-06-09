@@ -3,34 +3,15 @@ import { Card, Button, Modal, message } from 'antd'
 import AddForm from './form/AddForm'
 import SettingForm from './form/SettingForm'
 import HTable from "@/components/HTable"
-import BaseForm from "@/components/BaseForm/"
+import SearchBar from "@/components/SearchBar"
 import RoleModel from "@/models/role"
+
 class index extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
-      formList: [
-        {
-          type: "INPUT",
-          placeholder: "角色ID",
-          field: "roleID",
-        },
-        {
-          type: "INPUT",
-          placeholder: "角色名称",
-          field: "roleName"
-        },
-        {
-          type: "SELECT",
-          initLabel: "状态",
-          field: "status",
-          Options: [
-            { label: "下线", value: 0 },
-            { label: "上线", value: 1 }
-          ]
-        }
-      ],
+     formOptions:["roleID","roleName","onlineStatus"],
       visible: false,
       modalTitle: "",
       type: "add",
@@ -99,6 +80,7 @@ class index extends React.Component {
     this.setState({
       visible: false,
     });
+   
   };
 
   handleCancel = e => {
@@ -148,22 +130,18 @@ class index extends React.Component {
       },
     ];
 
-
-
-
     return (
-      <div>
-        <Card>
-          <BaseForm formList={this.state.formList}>
-          </BaseForm>
-        </Card>
-
+      <div className="table_wrapper">
+      
+          <SearchBar formOptions={this.state.formOptions}>
+          </SearchBar>
+       
         <Card>
           <Button type="primary" style={{ marginRight: 20 }} onClick={() => { this.showModal("add") }}>添加角色</Button>
           <Button type="primary" style={{ marginRight: 20 }} onClick={() => { this.showModal("edit") }}>权限设置</Button>
           <Button type="primary" onClick={() => { this.showModal("delete") }}>用户授权</Button>
         </Card>
-        <Card>
+       
           <HTable
             bordered
             columns={columns}
@@ -171,7 +149,7 @@ class index extends React.Component {
             rowSelection={"radio"}
             selectedRowKeys={this.state.selectedRowKeys}
             updateSelectedData={this.updateSelectedData.bind(this)} />,
-        </Card>
+       
 
 
         <Modal
@@ -183,13 +161,10 @@ class index extends React.Component {
         {(() => {
           switch (this.state.type) {
             case 'add':
-              return <AddForm></AddForm>;
-            
+              return <AddForm ></AddForm>;
             case 'edit':
               return <SettingForm formData={this.state.rowData}></SettingForm>;
-              
             default:console.log("error");
-            
           }
         })()}
         </Modal>

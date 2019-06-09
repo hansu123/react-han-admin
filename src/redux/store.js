@@ -1,10 +1,15 @@
-import {createStore} from "redux"
+// import {createStore} from "redux"
+// import reducer from "./reducer"
+// const store=createStore(reducer)
+
+// export default store;
+
+//使用redux-thunk
+import {createStore,applyMiddleware} from "redux"
 import reducer from "./reducer"
-const store=createStore(reducer)
+import thunk from "redux-thunk"
+const store=createStore(
+  reducer,
+  applyMiddleware(thunk))
 
-export default store;
-
-
-//store
-//reducer监听action,通过action的type来改变state的值
-//action就是一个函数
+export default store

@@ -2,9 +2,9 @@ import {get} from "@/util/request.js"
 
 class UserModel{
 
-async getUserList(){
+async getUserList(params){
 
-let d=await get("user/userList")
+let d=await get("user/userList",params)
 
 return d
 
